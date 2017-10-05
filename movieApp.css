@@ -1,0 +1,15 @@
+body {
+	background-color: #b2e9fd;
+}
+
+.header h2 {
+	color: #DC4247;
+}
+
+.header p {
+	color: #50524f;
+}
+
+.results {
+	margin-top: 20px;
+}
