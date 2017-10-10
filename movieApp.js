@@ -14,7 +14,7 @@ $(function () {
 			var newBodyDiv = $('<div class = "card-body"></div>');
 			var newCardTitle= $('<h4 class= "card-title"> Card title</h4>');
 			var newCardBadgeYear = $('<span class = "badge badge-secondary float-right"></span>');
-			var newAnchor = $('<a href= "#" class = "btn btn-primary"> Add!</a>');
+			var newAnchor = $('<a href= "#" data-movie="'+ movie.imdbID +' "class = "btn btn-primary addButton"> Add!</a>');
 
 
 			if(movie.Poster == "N/A") {
@@ -48,5 +48,54 @@ $(function () {
 		});
 			
 	});
+
+	$('.card-columns').on('click', '.addButton', function(e) {
+		var buttonJustClicked= $(this); 
+		var movieID= buttonJustClicked.data("movie");   //from data-movie in newAnchor
+
+		console.log(movieID); 
+
+		var url ="http://www.omdbapi.com/?apikey=3430a78&i=" + movieID; 
+		$.get(url, function(data) {
+			var movieInstance= new Movie (data);
+			console.log(movieInstance.movieData);
+			movieInstance.addToWatchList();
+		})
+
+	});
+
+		//somewhere we will have localStorage.setItem('watchlist', JSON.stringify(watchlist));
+		//to get something we'll do JSON.parse(localStorage.getItem('watchlist')); 
+
+		// var watchlist = [
+		// {
+		// 	Title: "Dark knight",
+		// 	Poster:"img.jpg",
+		// 	likeValue: 1
+		// },
+		// {
+		// 	Title: "Dark Knight", 
+		// 	Poster: "img.jpg"
+		// }
+		
+	$('.watchlist').on('shown.bs.modal', function () {
+		var currentWatchlist = localStorage.getItem('myWatchList');
+		currentWatchlist = JSON.parse(currentWatchlist);
+		if (!currentWatchlist) {
+			currentWatchlist = {};
+		}
+
+		$('.modal-body').empty();
+
+		Object.keys(currentWatchlist).forEach(function(imdbID){
+			var currentMovieData = currentWatchlist[imdbID];
+			var movieInstance = new Movie(currentMovieData);
+
+			var movieHTML = movieInstance.generateHTML();
+
+			$('.modal-body').append(movieHTML);
+		});
+
+	})
 
 })
